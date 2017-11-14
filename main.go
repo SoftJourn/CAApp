@@ -27,7 +27,7 @@ func main() {
 	//faceService.VerifyFace(faceId, personId, personGroupId)
 
 
-	userService := userService.NewUserService("http://172.18.0.8:4000/", "usr", "org1")
+	userService := userService.NewUserService("http://node.example.com:4000/", "usr", "org1")
 
 	// Make the web application listening
 	app := controllers.Application{

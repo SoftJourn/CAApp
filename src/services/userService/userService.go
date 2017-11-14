@@ -20,7 +20,7 @@ var caKeyPath string = "/go/src/github.com/SoftJourn//CAApp/fixtures/channel/cry
 //var caCertificatePath string = "/home/vitaliy/projects/gocode/src/CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
 //var caKeyPath string = "/home/vitaliy/projects/gocode/src/github.com/SoftJourn/CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/8791d1363e89515f9afa042b0693a2c704bb8dd95d28f97d3549a2b9e3c4352d_sk"
 var caKvsPath string = "/tmp/fabric-client-kvs_peerOrg1"
-var peers []string = []string {"172.18.0.7:7051"}
+var peers []string = []string {"peer0.org1.example.com:7051"}
 var channelName = "mychannel"
 var chaincodeName string = "usr"
 
