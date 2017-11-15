@@ -29,6 +29,8 @@ func (app *Application) GenerateHandler(w http.ResponseWriter, r *http.Request) 
 
 		Username: username,
 		Email: email,
+		CaCertificatePath: app.UserService.GetOrganization().CaCertificatePath,
+		CaKeyPath: app.UserService.GetOrganization().CaKeyPath,
 
 		Response: models.ResponseInfo{
 			Success: false,

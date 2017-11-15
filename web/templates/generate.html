@@ -23,12 +23,12 @@
     <div class="form-group">
         <label for="caCertificatePath">CA Certificate</label>
         <input type="text" class="form-control" id="caCertificatePath" name="caCertificatePath"
-               value="/go/src/github.com/SoftJourn/CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem">
+               value="{{ .CaCertificatePath }}">
     </div>
     <div class="form-group">
         <label for="caKeyPath">CA Key</label>
         <input type="text" class="form-control" id="caKeyPath" name="caKeyPath"
-               value="/go/src/github.com/SoftJourn//CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/8791d1363e89515f9afa042b0693a2c704bb8dd95d28f97d3549a2b9e3c4352d_sk">
+               value="{{ .CaKeyPath }}">
     </div>
     <input type="hidden" name="submitted" value="true">
     <div class="form-group">

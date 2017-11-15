@@ -11,27 +11,28 @@ import (
 	"github.com/SoftJourn/CAApp/src/ca"
 )
 
-//TODO move out
+type Organization struct {
+	OrgId string `json:"orgId"`
+	ChaincodeApiUrl string `json:"chaincodeApiUrl"`
+	UsersChaincodeName string `json:"usersChaincodeName"`
+	CaCertificatePath string `json:"caCertificatePath"`
+	CaKeyPath string `json:"caKeyPath"`
+	CaKvsPath string `json:"caKvsPath"`
+	Peers []string `json:"peers"`
+	ChannelName string `json:"channelName"`
+	HttpClientTimeoutSec time.Duration `json:"httpClientTimeoutSec"`
+}
 
-
-var caCertificatePath string = "/go/src/github.com/SoftJourn/CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
-var caKeyPath string = "/go/src/github.com/SoftJourn//CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/8791d1363e89515f9afa042b0693a2c704bb8dd95d28f97d3549a2b9e3c4352d_sk"
-
-//var caCertificatePath string = "/home/vitaliy/projects/gocode/src/CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
-//var caKeyPath string = "/home/vitaliy/projects/gocode/src/github.com/SoftJourn/CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/8791d1363e89515f9afa042b0693a2c704bb8dd95d28f97d3549a2b9e3c4352d_sk"
-var caKvsPath string = "/tmp/fabric-client-kvs_peerOrg1"
-var peers []string = []string {"peer0.org1.example.com:7051"}
-var channelName = "mychannel"
-var chaincodeName string = "usr"
+var organization Organization
 
 var netClient = &http.Client{
 	Timeout: time.Second * 20,
 }
 
 type UserService struct {
-	ChaincodeApiUrl string
-	ChaincodeName string
-	OrgId string
+	ChaincodeApiUrl   string
+	UserChaincodeName string
+	OrgId             string
 }
 
 type EnrollRequest struct {
@@ -57,11 +58,14 @@ type InvokeResponse struct {
 	BodyBytes  []byte `json:"bodyBytes"`
 }
 
-func NewUserService(chaincodeApiUrl string, chaincodeName string, orgId string) *UserService {
+func NewUserService(org Organization) *UserService {
+	organization = org
+	netClient.Timeout = time.Second * org.HttpClientTimeoutSec
+
 	return &UserService{
-		ChaincodeApiUrl: chaincodeApiUrl,
-		ChaincodeName: chaincodeName,
-		OrgId: orgId,
+		ChaincodeApiUrl:   org.ChaincodeApiUrl,
+		UserChaincodeName: org.UsersChaincodeName,
+		OrgId:             org.OrgId,
 	}
 }
 
@@ -77,7 +81,7 @@ func (us *UserService) GetUserById(userId string) (types.UserData, error) {
 	}
 	fmt.Printf("enrollData: %s\n", enrollData)
 
-	response, err := us.invokeChaincode(chaincodeName, enrollData.Token, peers, "getUserDataById", []string{userId})
+	response, err := us.invokeChaincode(organization.UsersChaincodeName, enrollData.Token, organization.Peers, "getUserDataById", []string{userId})
 	if err != nil {
 		fmt.Printf("Error: %s\n", err.Error())
 		return userData, err
@@ -103,12 +107,12 @@ func (us *UserService) GetUserById(userId string) (types.UserData, error) {
 
 func (us *UserService) AddUser(userData types.UserData) error {
 
-	caCertInfo, err := ca.Generate(userData.Email, caCertificatePath, caKeyPath)
+	caCertInfo, err := ca.Generate(userData.Email, organization.CaCertificatePath, organization.CaKeyPath)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err.Error())
 		return err
 	}
-	err = ca.Deploy(userData.Email, caCertInfo, caKvsPath)
+	err = ca.Deploy(userData.Email, caCertInfo,  organization.CaKvsPath)
 	if err != nil {
 		fmt.Printf("Error: %s\n", err.Error())
 		return err
@@ -128,7 +132,7 @@ func (us *UserService) AddUser(userData types.UserData) error {
 		return err
 	}
 
-	_, err = us.invokeChaincode(chaincodeName, enrollData.Token, peers, "addUser", []string{string(userDataBytes)})
+	_, err = us.invokeChaincode(organization.UsersChaincodeName, enrollData.Token, organization.Peers, "addUser", []string{string(userDataBytes)})
 	if err != nil {
 		fmt.Printf("Error: %s\n", err.Error())
 		return err
@@ -193,7 +197,7 @@ func (us *UserService) invokeChaincode(chaincodeName string, token string, peers
 		return  invokeResponse, err
 	}
 
-	url := us.ChaincodeApiUrl + "channels/"+ channelName + "/chaincodes/" + chaincodeName
+	url := us.ChaincodeApiUrl + "channels/"+ organization.ChannelName + "/chaincodes/" + chaincodeName
 	request, _ := http.NewRequest(http.MethodPost, url, bytes.NewReader(bodyBytes))
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("Authorization", "Bearer " + token)
@@ -213,4 +217,8 @@ func (us *UserService) invokeChaincode(chaincodeName string, token string, peers
 	}
 	fmt.Printf("invoke responseBodyBytes: %s\n", invokeResponse.BodyBytes)
 	return  invokeResponse, err
+}
+
+func (us *UserService) GetOrganization() Organization {
+	return organization
 }

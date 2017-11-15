@@ -18,6 +18,8 @@ type ResponseInfo struct {
 type GenerateModel struct {
 	Email string
 	Username string
+	CaCertificatePath string
+	CaKeyPath string
 	CertificateInfo ca.CertificateInfo
 	Response ResponseInfo
 }

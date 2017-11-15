@@ -81,7 +81,7 @@ func (app *Application) RegisterHandler(responseWriter http.ResponseWriter, requ
 		Email:     ldapUser.Email,
 		FirstName: ldapUser.FirstName,
 		LastName:  ldapUser.LastName,
-		PersonGroupId: "1",
+		PersonGroupId: registerRequest.PersonGroupId,
 	}
 
 	if len(imageBytes) > 0 {

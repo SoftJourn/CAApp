@@ -4,32 +4,34 @@ import (
 	"github.com/SoftJourn/CAApp/web/controllers"
 	"github.com/SoftJourn/CAApp/src/services/faceService"
 	"github.com/SoftJourn/CAApp/src/services/userService"
+	"os"
+	"fmt"
+	"encoding/json"
 )
 
+type Configuration struct {
 
-type User struct {
-	Name string
+	FaceServiceBaseUrl string `json:"faceServiceBaseUrl"`
+	FaceServiceAppKey string `json:"faceServiceAppKey"`
+
+	Organization userService.Organization `json:"organization"`
 }
 
 func main() {
+	file, _ := os.Open("config.json")
+	decoder := json.NewDecoder(file)
+	configuration := Configuration{}
+	err := decoder.Decode(&configuration)
+	if err != nil {
+		fmt.Println("error:", err)
+		return
+	}
+	fmt.Println(configuration)
 
-	baseUrl := "https://westeurope.api.cognitive.microsoft.com/face/v1.0/"
-	appKey := "ddafd2521bb64f64b79d915c70ecb35e"
-	faceService := faceService.NewFaceService(baseUrl, appKey)
+	faceService := faceService.NewFaceService(configuration.FaceServiceBaseUrl, configuration.FaceServiceAppKey)
 
+	userService := userService.NewUserService(configuration.Organization)
 
-	//personGroupId := "1"
-	//imageBytes := []byte(`{"url":"https://www.smileexpo.ru/public/upload/speakers/tn3_robert_wiecko_15063270100748_image.jpg"}`)
-	//
-	//faceId, _ := faceService.DetectFace(imageBytes)
-	//personId, _ := faceService.CreatePerson(personGroupId, "Jim")
-	//faceService.AddFaceToPerson(personGroupId, personId , imageBytes)
-	//faceService.VerifyFace(faceId, personId, personGroupId)
-
-
-	userService := userService.NewUserService("http://node.example.com:4000/", "usr", "org1")
-
-	// Make the web application listening
 	app := controllers.Application{
 		FaceService: *faceService,
 		UserService: *userService,
