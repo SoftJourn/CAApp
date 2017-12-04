@@ -18,6 +18,7 @@ func Serve(app controllers.Application) {
 	http.HandleFunc("/deploy", app.GenerateHandler)
 	http.HandleFunc("/api/register", app.RegisterHandler)
 	http.HandleFunc("/api/login", app.FaceLoginHandler)
+	http.HandleFunc("/api/certificate", app.CertificateHandler)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)

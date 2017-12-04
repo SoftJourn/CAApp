@@ -8,11 +8,13 @@ import (
 	"html/template"
 	"github.com/SoftJourn/CAApp/src/services/faceService"
 	"github.com/SoftJourn/CAApp/src/services/userService"
+	"github.com/SoftJourn/CAApp/src/types"
 )
 
 type Application struct {
 	FaceService faceService.FaceService
 	UserService userService.UserService
+	Configuration types.Configuration
 }
 
 func renderTemplate(w http.ResponseWriter, r *http.Request, templateName string, data interface{}) {

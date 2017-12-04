@@ -7,20 +7,13 @@ import (
 	"os"
 	"fmt"
 	"encoding/json"
+	"github.com/SoftJourn/CAApp/src/types"
 )
-
-type Configuration struct {
-
-	FaceServiceBaseUrl string `json:"faceServiceBaseUrl"`
-	FaceServiceAppKey string `json:"faceServiceAppKey"`
-
-	Organization userService.Organization `json:"organization"`
-}
 
 func main() {
 	file, _ := os.Open("config.json")
 	decoder := json.NewDecoder(file)
-	configuration := Configuration{}
+	configuration := types.Configuration{}
 	err := decoder.Decode(&configuration)
 	if err != nil {
 		fmt.Println("error:", err)
@@ -35,6 +28,7 @@ func main() {
 	app := controllers.Application{
 		FaceService: *faceService,
 		UserService: *userService,
+		Configuration: configuration,
 	}
 	web.Serve(app)
 }

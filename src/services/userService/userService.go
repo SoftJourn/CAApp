@@ -11,19 +11,7 @@ import (
 	"github.com/SoftJourn/CAApp/src/ca"
 )
 
-type Organization struct {
-	OrgId string `json:"orgId"`
-	ChaincodeApiUrl string `json:"chaincodeApiUrl"`
-	UsersChaincodeName string `json:"usersChaincodeName"`
-	CaCertificatePath string `json:"caCertificatePath"`
-	CaKeyPath string `json:"caKeyPath"`
-	CaKvsPath string `json:"caKvsPath"`
-	Peers []string `json:"peers"`
-	ChannelName string `json:"channelName"`
-	HttpClientTimeoutSec time.Duration `json:"httpClientTimeoutSec"`
-}
-
-var organization Organization
+var organization types.Organization
 
 var netClient = &http.Client{
 	Timeout: time.Second * 20,
@@ -58,7 +46,7 @@ type InvokeResponse struct {
 	BodyBytes  []byte `json:"bodyBytes"`
 }
 
-func NewUserService(org Organization) *UserService {
+func NewUserService(org types.Organization) *UserService {
 	organization = org
 	netClient.Timeout = time.Second * org.HttpClientTimeoutSec
 
@@ -219,6 +207,6 @@ func (us *UserService) invokeChaincode(chaincodeName string, token string, peers
 	return  invokeResponse, err
 }
 
-func (us *UserService) GetOrganization() Organization {
+func (us *UserService) GetOrganization() types.Organization {
 	return organization
 }
