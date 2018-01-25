@@ -3,15 +3,15 @@
   "faceServiceAppKey": "ddafd2521bb64f64b79d915c70ecb35e",
   "organization" : {
 
-    "orgId" : "org1",
-    "chaincodeApiUrl" : "http://node.example.com:4000/",
+    "orgId" : "coins",
+    "chaincodeApiUrl" : "http://node.sjfabric.softjourn.if.ua:4000/",
     "usersChaincodeName" : "usr",
 
-    "caCertificatePath" : "/go/src/github.com/SoftJourn/CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem",
-    "caKeyPath" : "/go/src/github.com/SoftJourn//CAApp/fixtures/channel/crypto-config/peerOrganizations/org1.example.com/ca/8791d1363e89515f9afa042b0693a2c704bb8dd95d28f97d3549a2b9e3c4352d_sk",
+    "caCertificatePath" : "/artifacts/channel/crypto-config/peerOrganizations/coins.sjfabric.softjourn.if.ua/ca/ca.coins.sjfabric.softjourn.if.ua-cert.pem",
+    "caKeyPath" : "/artifacts/channel/crypto-config/peerOrganizations/coins.sjfabric.softjourn.if.ua/ca/e5e9b2fb08e4be553f3805bc7170fb3668715305dae211d00bc7057a1125660b_sk",
 
-    "caKvsPath" : "/tmp/fabric-client-kvs_peerOrg1",
-    "peers" : ["peer0.org1.example.com:7051"],
+    "caKvsPath" : "/app_data/fabric-client-kvs_peerCoins",
+    "peers" : ["peer0.coins.sjfabric.softjourn.if.ua:7051"],
     "channelName" : "mychannel",
     "httpClientTimeoutSec" : 20
   }
